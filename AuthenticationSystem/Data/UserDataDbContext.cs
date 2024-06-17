@@ -1,4 +1,4 @@
-﻿using AuthenticationSystem.Models.Domain;
+﻿using AuthenticationSystem.Models.Authorization;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,9 +8,9 @@ namespace AuthenticationSystem.Data
     {
         public UserDataDbContext(DbContextOptions<UserDataDbContext> options): base(options)
         {
-            
+        
         }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<SignUp> SignUp { get; set; }
     }
 }

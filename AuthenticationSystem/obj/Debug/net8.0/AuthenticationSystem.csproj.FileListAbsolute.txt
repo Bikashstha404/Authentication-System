@@ -140,3 +140,4 @@ D:\My Own Projects\6. Authorization System\AuthenticationSystemProject\Authentic
 D:\My Own Projects\6. Authorization System\AuthenticationSystemProject\AuthenticationSystem\obj\Debug\net8.0\AuthenticationSystem.pdb
 D:\My Own Projects\6. Authorization System\AuthenticationSystemProject\AuthenticationSystem\obj\Debug\net8.0\AuthenticationSystem.genruntimeconfig.cache
 D:\My Own Projects\6. Authorization System\AuthenticationSystemProject\AuthenticationSystem\obj\Debug\net8.0\ref\AuthenticationSystem.dll
+D:\My Own Projects\6. Authorization System\AuthenticationSystemProject\AuthenticationSystem\obj\Debug\net8.0\AuthenticationSystem.sourcelink.json
