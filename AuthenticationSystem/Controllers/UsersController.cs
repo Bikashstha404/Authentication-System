@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AuthenticationSystem.Controllers
 {
@@ -18,7 +19,8 @@ namespace AuthenticationSystem.Controllers
             this.signInManager = signInManager;
         }
 
-        [HttpPost]
+        [HttpPost("SignUp")]
+
         public async Task<IActionResult> SignUp([FromForm] SignUp signUp)
         {
             var existingUser = await userManager.FindByEmailAsync(signUp.Email);
@@ -44,7 +46,28 @@ namespace AuthenticationSystem.Controllers
             }
             else
             {
-                return BadRequest(new { Message = "Failed to create user", Errors = result.Errors });
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                return BadRequest(new { Message = "Failed to create user", Errors = errors });
+            }
+        }
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromForm] Login login)
+        {
+            var userData = await userManager.FindByEmailAsync(login.Email);
+            if (userData == null)
+            {
+                return BadRequest(new { Message = "Invalid Email" });
+            }
+
+            var user = await signInManager.PasswordSignInAsync(userData.UserName, login.Password, false, false);
+            if (user.Succeeded)
+            {
+                return Ok(new { Message = "Login Successfull." });
+            }
+            else
+            {
+                return BadRequest(new { Message = "Login Failed."});
             }
         }
     }
