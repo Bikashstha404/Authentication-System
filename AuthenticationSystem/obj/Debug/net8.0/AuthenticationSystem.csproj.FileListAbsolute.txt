@@ -141,3 +141,6 @@ D:\My Own Projects\6. Authorization System\AuthenticationSystemProject\Authentic
 D:\My Own Projects\6. Authorization System\AuthenticationSystemProject\AuthenticationSystem\obj\Debug\net8.0\AuthenticationSystem.genruntimeconfig.cache
 D:\My Own Projects\6. Authorization System\AuthenticationSystemProject\AuthenticationSystem\obj\Debug\net8.0\ref\AuthenticationSystem.dll
 D:\My Own Projects\6. Authorization System\AuthenticationSystemProject\AuthenticationSystem\obj\Debug\net8.0\AuthenticationSystem.sourcelink.json
+D:\My Own Projects\6. Authorization System\AuthenticationSystemProject\AuthenticationSystem\bin\Debug\net8.0\AuthenticationSystem.staticwebassets.runtime.json
+D:\My Own Projects\6. Authorization System\AuthenticationSystemProject\AuthenticationSystem\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.UI.dll
+D:\My Own Projects\6. Authorization System\AuthenticationSystemProject\AuthenticationSystem\bin\Debug\net8.0\Microsoft.Extensions.FileProviders.Embedded.dll

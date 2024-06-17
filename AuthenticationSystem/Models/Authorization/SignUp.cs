@@ -4,6 +4,7 @@ namespace AuthenticationSystem.Models.Authorization
 {
     public class SignUp
     {
+        public Guid Id { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]

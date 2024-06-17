@@ -1,4 +1,5 @@
 using AuthenticationSystem.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<UserDataDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("UserDataConnectionString")));
+
+builder.Services.AddDefaultIdentity<IdentityUser>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<UserDataDbContext>();
 
 var app = builder.Build();
 
