@@ -2,6 +2,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AuthenticationSystem.Controllers
@@ -12,6 +16,7 @@ namespace AuthenticationSystem.Controllers
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
+        private string SecretKey = "sedusifhaaofhdsofaodsjfodajofjsojfojdsoifjdsocret";
 
         public UsersController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
@@ -53,7 +58,7 @@ namespace AuthenticationSystem.Controllers
 
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromForm] Login login)
-        {
+            {
             var userData = await userManager.FindByEmailAsync(login.Email);
             if (userData == null)
             {
@@ -63,12 +68,34 @@ namespace AuthenticationSystem.Controllers
             var user = await signInManager.PasswordSignInAsync(userData.UserName, login.Password, false, false);
             if (user.Succeeded)
             {
-                return Ok(new { Message = "Login Successfull." });
+                var token = CreateToken(userData);
+                return Ok(new { Message = "Login Successfull.", Token =  token });
             }
             else
             {
                 return BadRequest(new { Message = "Login Failed."});
             }
+        }
+        [HttpGet]
+        public string CreateToken(IdentityUser user)
+        {
+            var authorizationClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email ),
+                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber)
+            };
+            var signInKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
+
+            var token = new JwtSecurityToken(
+                issuer: null,
+                audience: null,
+                expires: DateTime.Now.AddHours(2),
+                claims: authorizationClaims,
+                signingCredentials: new SigningCredentials(signInKey, SecurityAlgorithms.HmacSha256Signature));
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwt;
         }
     }
 }
