@@ -1,4 +1,5 @@
 ﻿using AuthenticationSystem.Models.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,7 @@ namespace AuthenticationSystem.Controllers
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
-        private string SecretKey = "sedusifhaaofhdsofaodsjfodajofjsojfojdsoifjdsocret";
+        private string SecretKey = "Thisisasecretkeyanditshouldbeuitlizedproperly";
 
         public UsersController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
@@ -56,6 +57,7 @@ namespace AuthenticationSystem.Controllers
             }
         }
 
+        //[Authorize]
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromForm] Login login)
             {
@@ -76,7 +78,22 @@ namespace AuthenticationSystem.Controllers
                 return BadRequest(new { Message = "Login Failed."});
             }
         }
-        [HttpGet]
+
+        [Authorize]
+        [HttpGet("Test1")]
+        public IActionResult Test1()
+        {
+            return Ok(new { Message = "Mission 1 Successfull" });
+        }
+
+        [HttpGet("Test2")]
+        public IActionResult Test2()
+        {
+            return Ok(new { Message = "Mission 2 Successfull" });
+        }
+
+
+        [HttpGet("CreateToken")]
         public string CreateToken(IdentityUser user)
         {
             var authorizationClaims = new List<Claim>

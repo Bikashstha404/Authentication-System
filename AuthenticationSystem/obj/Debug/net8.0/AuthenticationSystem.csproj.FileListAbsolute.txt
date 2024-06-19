@@ -144,3 +144,4 @@ D:\My Own Projects\6. Authorization System\AuthenticationSystemProject\Authentic
 D:\My Own Projects\6. Authorization System\AuthenticationSystemProject\AuthenticationSystem\bin\Debug\net8.0\AuthenticationSystem.staticwebassets.runtime.json
 D:\My Own Projects\6. Authorization System\AuthenticationSystemProject\AuthenticationSystem\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.UI.dll
 D:\My Own Projects\6. Authorization System\AuthenticationSystemProject\AuthenticationSystem\bin\Debug\net8.0\Microsoft.Extensions.FileProviders.Embedded.dll
+D:\My Own Projects\6. Authorization System\AuthenticationSystemProject\AuthenticationSystem\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
