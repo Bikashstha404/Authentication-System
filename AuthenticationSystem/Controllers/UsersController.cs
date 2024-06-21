@@ -17,12 +17,14 @@ namespace AuthenticationSystem.Controllers
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
+        private readonly RoleManager<IdentityRole> roleManager;
         private string SecretKey = "Thisisasecretkeyanditshouldbeuitlizedproperly";
 
-        public UsersController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public UsersController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> roleManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.roleManager = roleManager;
         }
 
         [HttpPost("SignUp")]
@@ -45,10 +47,22 @@ namespace AuthenticationSystem.Controllers
                 PasswordHash = signUp.Password,
                 PhoneNumber = signUp.PhoneNumber,
             };
+
             var result = await userManager.CreateAsync(user, signUp.Password);
             if (result.Succeeded)
             {
-                return Ok(new { Message = "User created successfully" });
+                var adminExists = await userManager.GetUsersInRoleAsync("Admin");
+                if (adminExists.Any())
+                {
+                    await userManager.AddToRoleAsync(user, "User");
+                    return Ok(new { Message = "User created successfully" });
+                }
+                else
+                {
+                    await userManager.AddToRoleAsync(user, "Admin");
+                    return Ok(new { Message = "Admin created successfully" });
+                }
+                
             }
             else
             {
@@ -71,7 +85,8 @@ namespace AuthenticationSystem.Controllers
             if (user.Succeeded)
             {
                 var token = CreateToken(userData);
-                return Ok(new { Message = "Login Successfull.", Token =  token });
+                var roles = await userManager.GetRolesAsync(userData);
+                return Ok(new { Message = "Login Successfull.", Token =  token, Roles = roles });
             }
             else
             {
@@ -79,13 +94,14 @@ namespace AuthenticationSystem.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "User")]
         [HttpGet("Test1")]
         public IActionResult Test1()
         {
             return Ok(new { Message = "Mission 1 Successfull" });
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpGet("Test2")]
         public IActionResult Test2()
         {
