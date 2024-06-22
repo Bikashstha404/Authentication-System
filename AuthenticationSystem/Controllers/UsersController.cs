@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -52,10 +54,21 @@ namespace AuthenticationSystem.Controllers
             if (result.Succeeded)
             {
                 var adminExists = await userManager.GetUsersInRoleAsync("Admin");
+                var managerExists = await userManager.GetUsersInRoleAsync("Manager");
+                var managerCount = managerExists.Count;
+
                 if (adminExists.Any())
                 {
-                    await userManager.AddToRoleAsync(user, "User");
-                    return Ok(new { Message = "User created successfully" });
+                    if (managerCount < 1)
+                    {
+                        await userManager.AddToRoleAsync(user, "Manager");
+                        return Ok(new { Message = "Manager Created Successfully" });
+                    }
+                    else
+                    {
+                        await userManager.AddToRoleAsync(user, "User");
+                        return Ok(new { Message = "User created successfully" });
+                    }
                 }
                 else
                 {
@@ -86,7 +99,7 @@ namespace AuthenticationSystem.Controllers
             {
                 var token = CreateToken(userData);
                 var roles = await userManager.GetRolesAsync(userData);
-                return Ok(new { Message = "Login Successfull.", Token =  token, Roles = roles });
+                return Ok(new { Message = "Login Successfull.", Token = token, Roles = roles });
             }
             else
             {
@@ -98,26 +111,40 @@ namespace AuthenticationSystem.Controllers
         [HttpGet("Test1")]
         public IActionResult Test1()
         {
-            return Ok(new { Message = "Mission 1 Successfull" });
+            return Ok(new { Message = "Mission 1 Successfull." });
         }
 
         [Authorize(Roles ="Admin")]
         [HttpGet("Test2")]
         public IActionResult Test2()
         {
-            return Ok(new { Message = "Mission 2 Successfull" });
+            return Ok(new { Message = "Mission 2 Successfull." });
+        }
+
+        [Authorize(Roles ="Manager")]
+        [HttpGet("Test3")]
+        public IActionResult Test3()
+        {
+            return Ok(new { Message = "Manager Login Succesfull." });
         }
 
 
         [HttpGet("CreateToken")]
-        public string CreateToken(IdentityUser user)
+        public async Task<string>  CreateToken(IdentityUser user)
         {
+            var userRoles = await userManager.GetRolesAsync(user);
             var authorizationClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Email, user.Email ),
-                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber)
+                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
             };
+
+            foreach (var role in userRoles)
+            {
+                authorizationClaims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
             var signInKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
 
             var token = new JwtSecurityToken(
